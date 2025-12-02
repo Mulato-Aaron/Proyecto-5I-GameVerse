@@ -1,0 +1,77 @@
+{% extends 'App_GameVerse/base.html' %}
+<!-- 🔹 Extiende la plantilla base que incluye navbar, footer y estilos -->
+
+{% load static %}
+<!-- 🔹 Permite usar {% static %} para imágenes u otros archivos estáticos -->
+
+{% block content %}
+<!-- 🔹 Bloque principal de contenido -->
+
+<div class="container my-4">
+<!-- 🔹 Contenedor Bootstrap con margen vertical -->
+
+    <div class="row">
+    <!-- 🔹 Fila para organizar imagen y detalles del producto -->
+
+        <div class="col-md-5">
+        <!-- 🔹 Columna para la imagen del producto -->
+
+            {% if producto.imagen %}
+                <!-- 🔹 Si el producto tiene imagen propia -->
+                <img src="{{ producto.imagen.url }}" class="img-fluid rounded shadow">
+            {% else %}
+                <!-- 🔹 Imagen por defecto si no tiene -->
+                <img src="{% static 'App_GameVerse/imagenes/no-image.png' %}" class="img-fluid rounded shadow">
+            {% endif %}
+
+        </div>
+
+        <div class="col-md-7">
+        <!-- 🔹 Columna para los detalles del producto -->
+
+            <h2>{{ producto.nombre }}</h2>
+            <!-- 🔹 Nombre del producto -->
+            <p>{{ producto.descripcion }}</p>
+            <!-- 🔹 Descripción -->
+            <p class="fw-bold">Precio: ${{ producto.precio }}</p>
+            <!-- 🔹 Precio en negrita -->
+
+            <a href="{% url 'App_GameVerse:proveedor_detalle' producto.proveedor.id %}"
+               class="text-info mb-3 d-block">
+               <!-- 🔹 Link para ver el proveedor del producto -->
+                Ver proveedor
+            </a>
+
+            {% if user.is_authenticated %}
+            <!-- 🔹 Solo usuarios autenticados pueden agregar al carrito -->
+
+                {% if not producto.ya_en_biblioteca and not producto.ya_en_carrito %}
+                <!-- 🔹 Solo si el producto no está en biblioteca ni en carrito -->
+                    <form action="{% url 'App_GameVerse:agregar_al_carrito' producto.id %}"
+                          method="POST" class="mt-3">
+                        {% csrf_token %}
+                        <!-- 🔹 Token CSRF -->
+                        <button class="btn btn-success w-100">Agregar al carrito</button>
+                        <!-- 🔹 Botón verde para agregar al carrito -->
+                    </form>
+                {% endif %}
+
+            {% else %}
+            <!-- 🔹 Si no está autenticado, mostrar mensaje de inicio de sesión -->
+                <h1>
+                    <a href="{% url 'App_GameVerse:login' %}">Inicia sesión</a> para comprar.
+                </h1>
+            {% endif %}
+
+            <a href="{% url 'App_GameVerse:tienda' %}" class="btn btn-secondary mt-3 w-100">
+            <!-- 🔹 Botón gris para volver a la tienda -->
+                Volver a la tienda
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+<!-- 🔹 Fin del bloque content -->

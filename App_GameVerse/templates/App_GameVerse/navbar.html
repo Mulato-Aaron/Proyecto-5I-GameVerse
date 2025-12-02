@@ -1,0 +1,70 @@
+{% load static %}
+<!-- 🔹 Carga la etiqueta 'static' para usar archivos estáticos -->
+
+<header class="header">
+    <!-- 🔹 Contenedor principal del navbar -->
+
+    <a href="{% url 'App_GameVerse:home' %}" class="logo">
+        <!-- 🔹 Logo que enlaza a la página de inicio -->
+        <img src="{% static 'App_GameVerse/imagenes/logotipo.png' %}" alt="GameVerse Logo">
+    </a>
+
+    {% if user.is_authenticated %}
+    <!-- 🔹 Mostrar carrito y crédito solo si el usuario está logueado -->
+
+    <!-- ICONO DEL CARRITO -->
+    <a href="{% url 'App_GameVerse:carrito_view' %}" class="carrito-icon">
+        <img src="{% static 'App_GameVerse/imagenes/carrito.svg' %}" alt="Carrito" class="carrito-img">
+    </a>
+
+    <!-- ⭐ CRÉDITO DEL USUARIO -->
+    <span style="margin-left:15px; font-weight:bold; color:#28a745;">
+        Crédito: ${{ user.credito }}
+    </span>
+    {% endif %}
+
+    {% if user.is_authenticated and user.is_superuser %}
+    <!-- 🔹 Botón de administración visible solo para superusuarios -->
+    <a href="{% url 'App_GameVerse:usuario_list' %}" class="admin-btn" style="
+        margin-left:20px;
+        padding:10px 15px;
+        background:#ffcc00;
+        color:#000;
+        border-radius:6px;
+        font-weight:bold;
+        text-decoration:none;">
+        Administración
+    </a>
+    {% endif %}
+
+    <!-- 🔹 Menú hamburguesa para móviles -->
+    <input type="checkbox" id="menu-toggle" class="menu-toggle">
+    <label for="menu-toggle" class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </label>
+
+    <nav class="navbar">
+        <!-- 🔹 Menú de navegación -->
+        <ul>
+            {% if user.is_authenticated %}
+                <!-- 🔹 Opciones para usuarios logueados -->
+                <li><a href="{% url 'App_GameVerse:home' %}">Inicio</a></li>
+                <li><a href="{% url 'App_GameVerse:tienda' %}">Tienda</a></li>
+                <li><a href="{% url 'App_GameVerse:biblioteca' %}">Biblioteca</a></li>
+                <li><a href="{% url 'App_GameVerse:compras' %}">Historial</a></li>
+                <li><a href="{% url 'App_GameVerse:credito' %}">Crédito</a></li>
+                <li><a href="{% url 'App_GameVerse:cuenta' %}">Cuenta</a></li>
+                <li><a href="{% url 'App_GameVerse:logout' %}" class="logout-btn">Cerrar Sesión</a></li>
+            {% else %}
+                <!-- 🔹 Opciones para usuarios no logueados -->
+                <li><a href="{% url 'App_GameVerse:home' %}">Inicio</a></li>
+                <li><a href="{% url 'App_GameVerse:tienda' %}">Tienda</a></li>
+                <li><a href="{% url 'App_GameVerse:login' %}" class="login-btn">Iniciar sesión</a></li>
+                <li><a href="{% url 'App_GameVerse:register' %}" class="login-btn">Registrarse</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+<!-- 🔹 Fin del header/navbar -->

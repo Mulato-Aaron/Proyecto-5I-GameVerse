@@ -1,0 +1,53 @@
+{% extends 'App_GameVerse/CRUD/base_crud.html' %}
+
+{% block content %}
+<!-- 🔹 Contenedor principal -->
+<div class="container mt-4">
+
+    <!-- 🔹 Título de la página -->
+    <h2>Usuarios</h2>
+
+    <!-- 🔹 Botón verde para agregar un nuevo usuario -->
+    <a href="{% url 'App_GameVerse:usuario_create' %}" class="btn btn-add mb-3">Agregar Usuario</a>
+
+    <!-- 🔹 Tabla de usuarios -->
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>País</th>
+                <th>Fecha de nacimiento</th>
+                <th>Estatus</th>
+                <th>Superuser</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.pais }}</td>
+                <td>{{ usuario.fecha_nacimiento }}</td>
+                <td>{{ usuario.estatus }}</td>
+                <td>{{ usuario.is_superuser|yesno:"Sí,No" }}</td>
+
+                <td>
+                    <!-- 🔹 Botón amarillo para editar -->
+                    <a href="{% url 'App_GameVerse:usuario_update' usuario.id %}" class="btn btn-edit btn-sm">Editar</a>
+
+                    <!-- 🔹 Botón rojo para eliminar -->
+                    <a href="{% url 'App_GameVerse:usuario_delete' usuario.id %}" class="btn btn-delete btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No hay usuarios registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

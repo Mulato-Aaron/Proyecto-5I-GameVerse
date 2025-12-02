@@ -1,0 +1,22 @@
+{% extends 'App_GameVerse/base.html' %}
+{% block content %}
+
+<!-- 🔹 Contenedor centrado para el formulario de registro -->
+<div class="col-md-5 mx-auto">
+
+    <!-- 🔹 Título del formulario -->
+    <h2 class="text-center">Registro de usuario</h2>
+
+    <!-- 🔹 Formulario de registro -->
+    <form method="post">
+        {% csrf_token %} <!-- 🔹 Token de seguridad contra CSRF -->
+
+        <!-- 🔹 Renderiza los campos del formulario -->
+        {{ form.as_p }}
+
+        <!-- 🔹 Botón de envío -->
+        <button type="submit" class="btn btn-success w-100">Registrarse</button>
+    </form>
+</div>
+
+{% endblock %}

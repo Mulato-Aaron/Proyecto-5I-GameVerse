@@ -1,0 +1,59 @@
+{% extends 'App_GameVerse/CRUD/base_crud.html' %}
+
+{% block content %}
+<!-- 🔹 Contenedor principal con margen superior -->
+<div class="container mt-4">
+
+    <!-- 🔹 Título de la sección -->
+    <h2>Productos</h2>
+
+    <!-- 🔹 Botón verde para agregar un nuevo producto -->
+    <a href="{% url 'App_GameVerse:producto_create' %}" class="btn btn-add mb-3">
+        Agregar Producto
+    </a>
+
+    <!-- 🔹 Tabla de productos -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Género</th>
+                <th>Proveedor</th>
+                <th>Precio</th>
+                <th>Disponible</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.tipo }}</td>
+                <td>{{ producto.genero }}</td>
+                <td>{{ producto.proveedor.nombre }}</td>
+                <td>${{ producto.precio }}</td>
+                <td>{{ producto.disponible|yesno:"Sí,No" }}</td>
+
+                <td>
+                    <!-- 🔹 Botón amarillo: Editar producto -->
+                    <a href="{% url 'App_GameVerse:producto_update' producto.id %}" class="btn btn-edit btn-sm">
+                        Editar
+                    </a>
+
+                    <!-- 🔹 Botón rojo: Eliminar producto -->
+                    <a href="{% url 'App_GameVerse:producto_delete' producto.id %}" class="btn btn-delete btn-sm">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <!-- 🔹 Mensaje si no hay productos registrados -->
+            <tr>
+                <td colspan="7" class="text-center">No hay productos registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

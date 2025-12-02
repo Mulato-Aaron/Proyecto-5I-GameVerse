@@ -1,0 +1,45 @@
+<!-- 🔹 Barra de navegación específica del panel CRUD -->
+<nav style="background:#222; padding:12px;">
+
+    <!-- 🔹 Lista horizontal de enlaces -->
+    <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0;">
+
+        <!-- 🔹 Enlaces a las vistas CRUD de cada modelo -->
+        <li>
+            <a href="{% url 'App_GameVerse:usuario_list' %}" 
+               style="color:white; text-decoration:none;">
+               Usuarios
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'App_GameVerse:producto_list' %}" 
+               style="color:white; text-decoration:none;">
+               Productos
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'App_GameVerse:proveedor_list' %}" 
+               style="color:white; text-decoration:none;">
+               Proveedores
+            </a>
+        </li>
+
+        <!-- 🔹 Separadores automáticos a la derecha para enlaces de "Ver sitio" y "Cerrar sesión" -->
+        <li style="margin-left:auto;">
+            <a href="{% url 'App_GameVerse:home' %}" 
+               style="color:#4da6ff; text-decoration:none; font-weight:bold;">
+               Ver sitio
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'App_GameVerse:logout' %}" 
+               style="color:#ff4d4d; text-decoration:none; font-weight:bold;">
+               Cerrar sesión
+            </a>
+        </li>
+
+    </ul>
+</nav>

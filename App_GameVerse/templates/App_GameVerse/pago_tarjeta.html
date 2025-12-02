@@ -1,0 +1,37 @@
+{% extends 'App_GameVerse/base.html' %}
+{% load static %}
+<!-- 🔹 Carga de archivos estáticos (CSS, imágenes, etc.) -->
+
+{% block content %}
+
+<div class="container py-4">
+    <!-- 🔹 Contenedor principal con padding vertical -->
+
+    <h2 class="mb-4">💳 Pago con tarjeta</h2>
+    <!-- 🔹 Título de la sección -->
+
+    <h4>Total: <strong>${{ total }}</strong></h4>
+    <!-- 🔹 Muestra el total de la compra -->
+
+    <form method="post" class="mt-3">
+        <!-- 🔹 Formulario de pago con tarjeta -->
+        {% csrf_token %}
+        <!-- 🔹 Token de seguridad para evitar CSRF -->
+        {{ form.as_p }}
+        <!-- 🔹 Renderiza los campos del formulario automáticamente -->
+        <button type="submit" class="btn btn-success btn-lg w-100">
+            Pagar
+        </button>
+        <!-- 🔹 Botón de envío del formulario -->
+    </form>
+
+    <div class="text-center mt-3">
+        <!-- 🔹 Opción para volver a métodos de pago -->
+        <a href="{% url 'App_GameVerse:comprar_carrito' %}" class="btn btn-secondary">
+            Volver a métodos de pago
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

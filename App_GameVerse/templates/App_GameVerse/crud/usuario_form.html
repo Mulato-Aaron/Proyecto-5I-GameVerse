@@ -1,0 +1,31 @@
+{% extends 'App_GameVerse/CRUD/base_crud.html' %}
+
+{% block content %}
+<!-- 🔹 Contenedor principal -->
+<div class="container mt-4">
+
+    <!-- 🔹 Título dinámico según si se está creando o editando -->
+    <h2>
+        {% if form.instance.pk %}
+            Editar Usuario
+        {% else %}
+            Agregar Usuario
+        {% endif %}
+    </h2>
+
+    <!-- 🔹 Formulario de usuario -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <!-- 🔹 Botón de acción principal (Guardar o Actualizar) -->
+        <button type="submit" class="btn btn-success">
+            {% if form.instance.pk %}Actualizar{% else %}Guardar{% endif %}
+        </button>
+
+        <!-- 🔹 Botón secundario: cancelar y volver a la lista -->
+        <a href="{% url 'App_GameVerse:usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+</div>
+{% endblock %}

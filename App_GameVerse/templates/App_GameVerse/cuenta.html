@@ -1,0 +1,39 @@
+{% extends 'App_GameVerse/base.html' %}
+<!-- 🔹 Extiende la plantilla base con navbar, footer y estilos -->
+
+{% load static %}
+<!-- 🔹 Permite usar {% static %} para recursos estáticos -->
+
+{% block content %}
+<!-- 🔹 Bloque principal de contenido -->
+
+<div class="main-content">
+<!-- 🔹 Contenedor principal con estilos de padding, fondo y borde redondeado -->
+
+    <h2 class="text-center mb-4">Configuración de tu cuenta</h2>
+    <!-- 🔹 Título centrado -->
+
+    <!-- 🔹 Formulario para actualizar datos de usuario -->
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <!-- 🔹 Token CSRF para seguridad -->
+        {{ form.as_p }}
+        <!-- 🔹 Renderiza los campos del formulario como párrafos -->
+        <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+        <!-- 🔹 Botón azul que ocupa todo el ancho -->
+    </form>
+
+    <!-- 🔹 Formulario para eliminar la cuenta -->
+    <form method="post" onsubmit="return confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
+        {% csrf_token %}
+        <!-- 🔹 Token CSRF -->
+        <input type="hidden" name="eliminar" value="1">
+        <!-- 🔹 Campo oculto para indicar que se desea eliminar la cuenta -->
+        <button type="submit" class="btn btn-danger w-100">Eliminar mi cuenta</button>
+        <!-- 🔹 Botón rojo que ocupa todo el ancho -->
+    </form>
+
+</div>
+
+{% endblock %}
+<!-- 🔹 Fin del bloque de contenido -->

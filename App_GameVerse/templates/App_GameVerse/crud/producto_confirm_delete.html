@@ -1,0 +1,25 @@
+{% extends 'App_GameVerse/CRUD/base_crud.html' %}
+
+{% block content %}
+<!-- 🔹 Contenedor principal centrado y con margen superior -->
+<div class="container mt-4">
+
+    <!-- 🔹 Título de la página -->
+    <h2>Eliminar Producto</h2>
+
+    <!-- 🔹 Mensaje de confirmación dinámico mostrando el nombre del producto -->
+    <p>¿Estás seguro de que quieres eliminar el producto "{{ producto.nombre }}"?</p>
+
+    <!-- 🔹 Formulario POST para confirmar la eliminación -->
+    <form method="post">
+        {% csrf_token %} <!-- 🔹 Token CSRF obligatorio en formularios POST -->
+
+        <!-- 🔹 Botón de eliminación con clase personalizada roja -->
+        <button type="submit" class="btn btn-delete btn-sm">Eliminar</button>
+
+        <!-- 🔹 Enlace para cancelar y regresar a la lista de productos -->
+        <a href="{% url 'App_GameVerse:producto_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+</div>
+{% endblock %}

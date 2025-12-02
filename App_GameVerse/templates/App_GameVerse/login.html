@@ -1,0 +1,30 @@
+{% extends 'App_GameVerse/base.html' %}
+<!-- 🔹 Extiende la plantilla base con navbar, footer y estilos -->
+
+{% block content %}
+<!-- 🔹 Bloque principal de contenido -->
+
+<div class="col-md-4 mx-auto">
+    <!-- 🔹 Centra el formulario en pantalla con ancho medio -->
+
+    <h2 class="text-center">Iniciar sesión</h2>
+    <!-- 🔹 Título centrado -->
+
+    <form method="post">
+        <!-- 🔹 Formulario de login con método POST -->
+        {% csrf_token %}
+        <!-- 🔹 Token CSRF para seguridad -->
+        {{ form.as_p }}
+        <!-- 🔹 Renderiza los campos del formulario automáticamente -->
+        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        <!-- 🔹 Botón para enviar el formulario, ancho completo -->
+    </form>
+
+    <p class="text-center mt-3">
+        <!-- 🔹 Enlace para registro si no tiene cuenta -->
+        ¿No tienes cuenta? <a href="{% url 'App_GameVerse:register' %}">Regístrate aquí</a>
+    </p>
+</div>
+
+{% endblock %}
+<!-- 🔹 Fin del bloque content -->

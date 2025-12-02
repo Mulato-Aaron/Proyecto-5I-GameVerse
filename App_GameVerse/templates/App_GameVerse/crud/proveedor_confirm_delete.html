@@ -1,0 +1,22 @@
+{% extends 'App_GameVerse/CRUD/base_crud.html' %}
+
+{% block content %}
+<!-- 🔹 Contenedor principal con margen superior -->
+<div class="container mt-4">
+
+    <!-- 🔹 Título de la sección -->
+    <h2>Eliminar Proveedor</h2>
+
+    <!-- 🔹 Mensaje de confirmación -->
+    <p>¿Estás seguro que deseas eliminar al proveedor <strong>{{ proveedor.nombre }}</strong>?</p>
+
+    <!-- 🔹 Formulario para confirmar eliminación -->
+    <form method="post">
+        {% csrf_token %}
+        <!-- 🔹 Botón rojo de eliminación -->
+        <button type="submit" class="btn btn-delete btn-sm">Eliminar</button>
+        <!-- 🔹 Botón secundario para cancelar -->
+        <a href="{% url 'App_GameVerse:proveedor_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

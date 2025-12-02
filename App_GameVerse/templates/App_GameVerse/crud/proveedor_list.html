@@ -1,0 +1,68 @@
+{% extends 'App_GameVerse/CRUD/base_crud.html' %}
+
+{% block content %}
+<!-- 🔹 Contenedor principal -->
+<div class="container mt-4">
+
+    <!-- 🔹 Título de la sección -->
+    <h2>Lista de Proveedores</h2>
+
+    <!-- 🔹 Botón verde para agregar un nuevo proveedor -->
+    <a href="{% url 'App_GameVerse:proveedor_create' %}" class="btn btn-add mb-3">
+        Agregar Proveedor
+    </a>
+
+    <!-- 🔹 Tabla de proveedores -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>País</th>
+                <th>Sitio Web</th>
+                <th>Estatus</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proveedor in proveedores %}
+            <tr>
+                <td>{{ proveedor.nombre }}</td>
+                <td>{{ proveedor.tipo }}</td>
+                <td>{{ proveedor.pais }}</td>
+
+                <!-- 🔹 Sitio web opcional -->
+                <td>
+                    {% if proveedor.sitio_web %}
+                        <a href="{{ proveedor.sitio_web }}" target="_blank">{{ proveedor.sitio_web }}</a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <!-- 🔹 Estatus en formato legible -->
+                <td>{{ proveedor.estatus|yesno:"Activo,Inactivo" }}</td>
+
+                <!-- 🔹 Botones de acción -->
+                <td>
+                    <!-- Botón amarillo: Editar -->
+                    <a href="{% url 'App_GameVerse:proveedor_update' proveedor.id %}" class="btn btn-edit btn-sm">
+                        Editar
+                    </a>
+
+                    <!-- Botón rojo: Eliminar -->
+                    <a href="{% url 'App_GameVerse:proveedor_delete' proveedor.id %}" class="btn btn-delete btn-sm">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <!-- 🔹 Mensaje si no hay proveedores -->
+            <tr>
+                <td colspan="6" class="text-center">No hay proveedores registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

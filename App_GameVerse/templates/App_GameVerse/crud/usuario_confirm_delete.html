@@ -1,0 +1,23 @@
+{% extends 'App_GameVerse/CRUD/base_crud.html' %}
+
+{% block content %}
+<!-- 🔹 Contenedor principal -->
+<div class="container mt-4">
+
+    <!-- 🔹 Título de la sección -->
+    <h2>Eliminar Usuario</h2>
+
+    <!-- 🔹 Mensaje de confirmación -->
+    <p>¿Estás seguro de que quieres eliminar al usuario "{{ usuario.username }}"?</p>
+
+    <!-- 🔹 Formulario de eliminación -->
+    <form method="post">
+        {% csrf_token %}
+        <!-- Botón rojo: eliminar usuario -->
+        <button type="submit" class="btn btn-delete btn-sm">Eliminar</button>
+        <!-- Botón secundario: cancelar acción -->
+        <a href="{% url 'App_GameVerse:usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+</div>
+{% endblock %}

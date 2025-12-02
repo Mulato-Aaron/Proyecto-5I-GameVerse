@@ -1,0 +1,31 @@
+{% extends 'App_GameVerse/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- 🔹 Contenedor principal de la sección -->
+<div class="container py-4">
+
+    <!-- 🔹 Título de la página -->
+    <h2 class="mb-4">💳 Selecciona el método de pago</h2>
+
+    <!-- 🔹 Muestra el total de la compra -->
+    <h4>Total: <strong>${{ total }}</strong></h4>
+
+    <!-- 🔹 Formulario para seleccionar método de pago -->
+    <form method="post" class="mt-3">
+        {% csrf_token %} <!-- 🔹 Token de seguridad CSRF -->
+        {{ form.as_p }}   <!-- 🔹 Renderiza los campos del formulario -->
+        <button type="submit" class="btn btn-success btn-lg w-100">Continuar</button>
+    </form>
+
+    <!-- 🔹 Botón para regresar al carrito -->
+    <div class="text-center mt-3">
+        <a href="{% url 'App_GameVerse:carrito_view' %}" class="btn btn-secondary">
+            Volver al carrito
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

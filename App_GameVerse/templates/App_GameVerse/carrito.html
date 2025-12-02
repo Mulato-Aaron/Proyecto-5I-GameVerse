@@ -1,0 +1,79 @@
+{% extends 'App_GameVerse/base.html' %}
+<!-- 🔹 Extiende la plantilla base, heredando navbar, footer y estilos -->
+
+{% load static %}
+<!-- 🔹 Carga el tag 'static' para usar archivos estáticos -->
+
+{% block content %}
+<!-- 🔹 Bloque de contenido principal -->
+
+<div class="container py-4">
+<!-- 🔹 Contenedor principal con padding vertical -->
+
+    <h2 class="mb-4">🛒 Tu Carrito</h2>
+    <!-- 🔹 Título de la sección con un icono de carrito -->
+
+    {% if items %}
+    <!-- 🔹 Verifica si hay productos en el carrito -->
+
+    <table class="table table-dark table-striped align-middle text-center">
+    <!-- 🔹 Tabla con estilos de Bootstrap: fondo oscuro, filas rayadas, contenido centrado vertical y horizontal -->
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+            <!-- 🔹 Itera sobre cada producto en el carrito -->
+            <tr>
+                <td>{{ item.producto.nombre }}</td>
+                <!-- 🔹 Nombre del producto -->
+                <td>${{ item.producto.precio }}</td>
+                <!-- 🔹 Precio individual del producto -->
+                <td>${{ item.precio }}</td>
+                <!-- 🔹 Subtotal (igual al precio, ya que no hay cantidad variable) -->
+                <td>
+                    <a href="{% url 'App_GameVerse:eliminar_del_carrito' item.id_producto %}" 
+                       class="btn btn-danger btn-sm">
+                    <!-- 🔹 Botón para eliminar producto del carrito -->
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="text-end mt-3">
+        Total: <strong>${{ total }}</strong>
+        <!-- 🔹 Muestra el total de todos los productos del carrito -->
+    </h4>
+
+    <div class="text-end mt-3">
+        <a href="{% url 'App_GameVerse:comprar_carrito' %}" 
+           class="btn btn-success btn-lg">
+        <!-- 🔹 Botón para proceder a seleccionar método de pago -->
+            Elegir método de pago
+        </a>
+    </div>
+
+    {% else %}
+    <!-- 🔹 Caso cuando el carrito está vacío -->
+    <h4 class="text-center mt-5">Tu carrito está vacío</h4>
+    <div class="text-center mt-3">
+        <a href="{% url 'App_GameVerse:tienda' %}" class="btn btn-primary">
+        <!-- 🔹 Botón para volver a la tienda -->
+            Volver a la tienda
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+<!-- 🔹 Fin del bloque de contenido -->

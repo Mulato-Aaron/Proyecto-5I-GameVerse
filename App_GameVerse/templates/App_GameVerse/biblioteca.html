@@ -1,0 +1,45 @@
+{% extends 'App_GameVerse/base.html' %}
+<!-- 🔹 Extiende la plantilla base, heredando navbar, footer y estilos -->
+
+{% block content %}
+<!-- 🔹 Bloque de contenido principal que reemplaza el bloque 'content' de base.html -->
+
+<h2>Tu Biblioteca</h2>
+<!-- 🔹 Título de la sección -->
+
+<div class="row">
+<!-- 🔹 Contenedor de Bootstrap para filas de tarjetas -->
+
+{% for item in productos %}
+<!-- 🔹 Itera sobre todos los productos en la biblioteca del usuario -->
+
+  <div class="col-md-3 mb-3">
+    <!-- 🔹 Cada producto ocupa 1/4 de la fila en pantallas medianas y grandes, con margen inferior -->
+    
+    <div class="card">
+      <!-- 🔹 Tarjeta de Bootstrap para mostrar imagen y detalles del producto -->
+      
+        {% if item.producto.imagen %}
+        <!-- 🔹 Verifica si el producto tiene imagen -->
+            <img src="{{ item.producto.imagen.url }}" class="card-img-top">
+            <!-- 🔹 Imagen del producto en la parte superior de la tarjeta -->
+        {% endif %}
+        
+        <div class="card-body">
+        <!-- 🔹 Contenedor del contenido textual de la tarjeta -->
+            <h5>{{ item.producto.nombre }}</h5>
+            <!-- 🔹 Nombre del producto -->
+            <p>Comprado el {{ item.fecha_compra }}</p>
+            <!-- 🔹 Fecha en que el usuario compró el producto -->
+        </div>
+    </div>
+  </div>
+
+{% empty %}
+<!-- 🔹 Si no hay productos en la biblioteca -->
+  <p>No tienes juegos en tu biblioteca.</p>
+{% endfor %}
+
+</div>
+{% endblock %}
+<!-- 🔹 Fin del bloque de contenido -->

@@ -1,0 +1,56 @@
+{% extends 'App_GameVerse/base.html' %}
+{% block content %}
+
+<!-- 🔹 Contenedor principal con fondo semi-transparente y padding -->
+<div class="p-4 rounded" style="background-color: rgba(0,0,0,0.6);">
+
+    <!-- 🔹 Nombre del proveedor -->
+    <h2 class="text-light mb-3">{{ proveedor.nombre }}</h2>
+
+    <!-- 🔹 Descripción del proveedor, con valor por defecto si no existe -->
+    <p class="text-light mb-4">{{ proveedor.descripcion|default:"Sin descripción disponible." }}</p>
+
+    <!-- 🔹 Información detallada del proveedor -->
+    <ul class="list-unstyled text-light">
+        <li><strong>Tipo:</strong> {{ proveedor.tipo }}</li>
+        <li><strong>País:</strong> {{ proveedor.pais }}</li>
+        <li><strong>Estatus:</strong> {{ proveedor.estatus|yesno:"Activo,No activo" }}</li>
+        {% if proveedor.sitio_web %}
+        <!-- 🔹 Muestra el sitio web si está definido -->
+        <li><strong>Sitio web:</strong> 
+            <a href="{{ proveedor.sitio_web }}" target="_blank" class="text-info text-decoration-none">
+                {{ proveedor.sitio_web }}
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+<hr class="my-4 text-secondary">
+<!-- 🔹 Separador entre info del proveedor y productos -->
+
+<h3 class="text-light mb-3">Productos de este proveedor</h3>
+<div class="row mt-3">
+    {% for producto in productos %}
+    <!-- 🔹 Cada producto se muestra en una tarjeta -->
+    <div class="col-md-3 mb-4">
+        <div class="card bg-dark text-light h-100 shadow">
+            {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ producto.nombre }}</h5>
+                <p class="card-text mb-2">Género: {{ producto.genero }}</p>
+                <p class="card-text"><strong>${{ producto.precio }}</strong></p>
+                <!-- 🔹 Botón para ver detalle del producto -->
+                <a href="{% url 'App_GameVerse:producto_detalle' producto.id %}" class="btn btn-outline-light w-100">Ver detalle</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <!-- 🔹 Mensaje si no hay productos -->
+        <p class="text-light">Este proveedor no tiene productos disponibles.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

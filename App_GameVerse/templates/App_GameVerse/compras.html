@@ -1,0 +1,68 @@
+{% extends 'App_GameVerse/base.html' %}
+<!-- 🔹 Extiende la plantilla base con navbar, footer y estilos -->
+
+{% block content %}
+<!-- 🔹 Bloque principal de contenido -->
+
+<h2>Historial de compras</h2>
+<!-- 🔹 Título de la sección -->
+
+<table class="table table-bordered mt-3">
+<!-- 🔹 Tabla con borde y margen superior -->
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Método de pago</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for compra in compras %}
+        <!-- 🔹 Itera sobre todas las compras del usuario -->
+        <tr>
+            <td>{{ compra.id }}</td>
+            <!-- 🔹 Muestra el ID de la compra -->
+
+            <!-- 🔥 Mostrar productos del JSON -->
+            <td>
+                <ul class="m-0 p-0" style="list-style: none;">
+                <!-- 🔹 Lista sin estilos por defecto -->
+                    {% for item in compra.detalles_productos %}
+                        <!-- 🔹 Itera sobre los productos dentro de la compra -->
+                        <li>
+                            {{ item.nombre }} — ${{ item.precio }} x {{ item.cantidad }}
+                            <!-- 🔹 Muestra nombre, precio y cantidad -->
+                        </li>
+                    {% empty %}
+                        <li>No hay detalles.</li>
+                        <!-- 🔹 Mensaje si no hay productos -->
+                    {% endfor %}
+                </ul>
+            </td>
+
+            <td>${{ compra.total }}</td>
+            <!-- 🔹 Total de la compra -->
+
+            <td>{{ compra.metodo_pago }}</td>
+            <!-- 🔹 Método de pago utilizado -->
+
+            <td>{{ compra.estatus }}</td>
+            <!-- 🔹 Estado de la compra (Completada, Pendiente, etc.) -->
+
+            <td>{{ compra.fecha_compra }}</td>
+            <!-- 🔹 Fecha en que se realizó la compra -->
+        </tr>
+        {% empty %}
+        <!-- 🔹 Caso si no hay compras registradas -->
+        <tr><td colspan="6">No hay compras registradas.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+<!-- 🔹 Fin del bloque de contenido -->

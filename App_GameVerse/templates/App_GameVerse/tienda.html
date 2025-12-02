@@ -1,0 +1,71 @@
+{% extends 'App_GameVerse/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- 🔹 Contenedor principal de la tienda -->
+<div class="container my-4">
+    <!-- 🔹 Título de la página -->
+    <h2 class="text-center mb-4">Tienda</h2>
+
+    <!-- 🔹 Mensajes flash (ej. confirmaciones o errores) -->
+    {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- 🔹 Grid de productos -->
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow h-100">
+
+                <!-- 🔹 Imagen del producto -->
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+                {% else %}
+                    <img src="{% static 'App_GameVerse/imagenes/no-image.png' %}" class="card-img-top">
+                {% endif %}
+
+                <!-- 🔹 Detalles del producto -->
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion|truncatewords:20 }}</p>
+                    <p class="fw-bold">Precio: ${{ producto.precio }}</p>
+
+                    <!-- 🔹 Botones de acción -->
+                    <div class="mt-auto">
+
+                        <!-- 🔹 Botón para ver más detalles del producto -->
+                        <a href="{% url 'App_GameVerse:producto_detalle' producto.pk %}"
+                           class="btn btn-outline-primary btn-sm w-100 mb-2">Ver más</a>
+
+                        {% if user.is_authenticated %}
+                            {% if not producto.ya_en_biblioteca and not producto.ya_en_carrito %}
+                                <!-- 🔹 Mostrar botón de agregar al carrito solo si el producto no está en biblioteca ni en carrito -->
+                                <form action="{% url 'App_GameVerse:agregar_al_carrito' producto.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-success btn-sm w-100">
+                                        Agregar al carrito
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <!-- 🔹 Si el usuario no está autenticado, se podría mostrar un mensaje o link de login -->
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% empty %}
+            <!-- 🔹 Mensaje si no hay productos -->
+            <p class="text-center">No hay productos disponibles.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

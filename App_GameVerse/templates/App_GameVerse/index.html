@@ -1,0 +1,32 @@
+{% extends 'App_GameVerse/base.html' %}
+<!-- 🔹 Extiende la plantilla base con navbar, footer y estilos -->
+
+{% load static %}
+<!-- 🔹 Permite usar {% static %} para imágenes u otros archivos estáticos -->
+
+{% block content %}
+<!-- 🔹 Bloque principal de contenido -->
+
+<section class="hero">
+<!-- 🔹 Sección destacada (hero) con imagen de logotipo y bienvenida -->
+
+    <div style="text-align: center;">
+        <!-- 🔹 Centrado del logotipo -->
+        <img src="{% static 'App_GameVerse/imagenes/logotipo.png' %}" alt="LOGO">
+    </div>
+
+    {% if user.is_authenticated %}
+    <!-- 🔹 Mensaje personalizado si el usuario está autenticado -->
+        <p>¡Bienvenido de nuevo a GameVerse {{ user.username }}!</p>
+    {% else %}
+    <!-- 🔹 Mensaje general si no hay usuario autenticado -->
+        <p>Bienvenido a GameVerse, tu tienda digital de videojuegos.</p>
+        <!-- 🔹 Botones para iniciar sesión o registrarse -->
+        <a href="{% url 'App_GameVerse:login' %}" class="btn btn-success">Iniciar sesión</a>
+        <a href="{% url 'App_GameVerse:register' %}" class="btn btn-outline-light">Registrarse</a>
+    {% endif %}
+
+</section>
+
+{% endblock %}
+<!-- 🔹 Fin del bloque content -->

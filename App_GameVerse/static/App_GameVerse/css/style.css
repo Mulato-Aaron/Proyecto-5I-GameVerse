@@ -1,0 +1,374 @@
+/* ============================ */
+/* AAMG 0656 5°I - Estilos globales */
+/* ============================ */
+
+/* ============================ */
+/* 🔹 Reset y estilo base del html y body */
+/* ============================ */
+html, body {
+    height: 100%; /* Ocupa toda la pantalla */
+    margin: 0; /* Sin márgenes por defecto */
+    padding: 0; /* Sin padding por defecto */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente base */
+    color: #e0e0e0; /* Color de texto general */
+    background-color: #1a1a2e; /* Fondo oscuro base */
+    background-image: url("../imagenes/fondo.jpg"); /* Imagen de fondo */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Fondo fijo al hacer scroll */
+    display: flex;
+    flex-direction: column; /* Layout principal en columna */
+    line-height: 1.6; /* Espaciado de líneas */
+}
+
+/* ============================ */
+/* 🔹 Contenedor principal de la página */
+/* ============================ */
+.main-content {
+    flex: 1; /* Ocupa todo el espacio disponible */
+    padding: 40px; /* Espaciado interno */
+    max-width: 1200px; /* Máximo ancho */
+    margin: 40px auto; /* Centrado horizontal y margen superior/inferior */
+    width: 100%; /* Ancho completo */
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Separación entre secciones internas */
+    backdrop-filter: blur(6px); /* Fondo borroso */
+    background-color: rgba(0, 0, 0, 0.25); /* Fondo semitransparente */
+    border-radius: 12px; /* Bordes redondeados */
+}
+
+/* ============================ */
+/* 🔹 Navbar (barra superior) */
+/* ============================ */
+.header {
+    background-color: rgba(15, 15, 29, 0.95); /* Fondo semi-oscuro */
+    color: #fff; /* Texto blanco */
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between; /* Espacio entre logo y menú */
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra */
+    position: sticky; /* Queda pegado al hacer scroll */
+    top: 0;
+    z-index: 1000; /* Encima de otros elementos */
+    backdrop-filter: blur(5px);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    height: 80px;
+    padding-left: 0;
+}
+
+.logo img {
+    height: 80px; /* Tamaño del logo */
+    width: auto;
+    display: block;
+}
+
+/* ============================ */
+/* 🔹 Menú hamburguesa para móviles */
+/* ============================ */
+.menu-toggle {
+    display: none; /* Oculto en desktop */
+}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer; /* Mano al pasar mouse */
+    gap: 6px; /* Espacio entre barras */
+    z-index: 1100; /* Encima del navbar */
+}
+
+.bar {
+    width: 28px;
+    height: 3px;
+    background-color: #fff;
+    border-radius: 5px;
+    transition: all 0.3s ease; /* Animación de transformación */
+}
+
+/* Animación al abrir el menú */
+.menu-toggle:checked + .hamburger .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 6px);
+}
+.menu-toggle:checked + .hamburger .bar:nth-child(2) {
+    opacity: 0; /* Barra central desaparece */
+}
+.menu-toggle:checked + .hamburger .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ============================ */
+/* 🔹 Navbar desplegable en móvil */
+/* ============================ */
+.navbar {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: rgba(15, 15, 29, 0.98); /* Fondo oscuro */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    z-index: 1000;
+    backdrop-filter: blur(6px);
+}
+
+/* Mostrar navbar al activar toggle */
+.menu-toggle:checked + .hamburger + .navbar {
+    display: flex;
+    animation: slideDown 0.4s ease forwards;
+}
+
+/* Animación de deslizamiento */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Lista de enlaces del navbar */
+.navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.navbar li {
+    width: 100%;
+    text-align: center;
+}
+
+.navbar a {
+    display: block;
+    padding: 15px;
+    font-size: 1.2em;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-bottom: 1px solid #222;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar a:hover,
+.navbar a.active {
+    background-color: #6e1c9b;
+    color: #fff;
+}
+
+/* ============================ */
+/* 🔹 Botones de login y acción */
+/* ============================ */
+.login-btn {
+    background-color: #ff00ff;
+    color: #fff !important;
+    font-weight: bold;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px; /* Espaciado */
+}
+
+.login-btn:hover {
+    background-color: #cc00cc;
+    box-shadow: 0 0 15px #cc00cc, 0 0 25px #cc00cc;
+}
+
+/* ============================ */
+/* 🔹 Hero section principal */
+/* ============================ */
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+    border-bottom: 2px solid #6e1c9b;
+    background-image: url("../imagenes/banner.jpg");
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(110, 28, 155, 0.4);
+}
+
+.hero h1 {
+    font-size: 4em;
+    color: #ff00ff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px #ff00ff, 0 0 25px #ff00ff;
+    letter-spacing: 3px;
+}
+
+.hero p {
+    font-size: 1.3em;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #c0c0c0;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* ============================ */
+/* 🔹 Usuario e info extra (perfil, créditos, etc.) */
+/* ============================ */
+.user-info {
+    text-align: right;
+    font-size: 1.2em;
+    color: #8a2be2;
+    border-top: 2px solid #6e1c9b;
+    padding-top: 20px;
+    background-image: url("../imagenes/fondo_usuario.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 500px;
+}
+
+/* ============================ */
+/* 🔹 Tarjetas, override de Bootstrap */
+/* ============================ */
+.container, .row, .col-md-3, .card {
+    background: transparent !important;
+    border: none;
+    box-shadow: none;
+}
+
+.card-body {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    padding: 15px;
+    color: #fff;
+}
+
+.card-title,
+.card-text {
+    color: #fff;
+}
+
+/* ============================ */
+/* 🔹 Formularios (login, registro, crédito) */
+/* ============================ */
+form {
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+form label {
+    display: block;
+    color: #ff00ff;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+form input, form select, form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #6e1c9b;
+    border-radius: 8px;
+    background-color: rgba(20, 20, 35, 0.9);
+    color: #fff;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+form input:focus, form select:focus, form textarea:focus {
+    border-color: #ff00ff;
+    box-shadow: 0 0 10px #ff00ff;
+    outline: none;
+}
+
+form button, .btn {
+    background-color: #ff00ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+form button:hover, .btn:hover {
+    background-color: #cc00cc;
+    box-shadow: 0 0 15px #cc00cc;
+}
+
+/* ============================ */
+/* 🔹 Footer */
+/* ============================ */
+footer {
+    background-color: rgba(15, 15, 29, 0.95);
+    color: #aaa;
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    background-image: url("../imagenes/footer.png");
+    background-size: cover;
+}
+
+/* ============================ */
+/* 🔹 Responsividad para móviles */
+/* ============================ */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 3em; }
+    .hero p { font-size: 1em; }
+    .user-info { text-align: center; margin-top: 30px; }
+}
+
+/* ============================ */
+/* 🔹 Icono de carrito */
+/* ============================ */
+.carrito-icon {
+    margin-left: auto;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.carrito-img {
+    width: 26px;
+    height: 26px;
+    filter: invert(100%);
+    transition: 0.2s ease-in-out;
+}
+
+.carrito-img:hover {
+    filter: invert(75%) sepia(100%) hue-rotate(20deg);
+}
+
+/* ============================ */
+/* 🔹 Botones CRUD con colores distintivos */
+/* ============================ */
+.btn-add {
+    background-color: #28a745 !important; /* Verde para agregar */
+    color: white !important;
+}
+.btn-add:hover {
+    background-color: #218838 !important;
+}
+
+.btn-edit {
+    background-color: #ffc107 !important; /* Amarillo para editar */
+    color: black !important;
+}
+.btn-edit:hover {
+    background-color: #e0a800 !important;
+}
+
+.btn-delete {
+    background-color: #dc3545 !important; /* Rojo para eliminar */
+    color: white !important;
+}
+.btn-delete:hover {
+    background-color: #c82333 !important;
+}
