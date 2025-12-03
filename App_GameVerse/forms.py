@@ -62,23 +62,48 @@ class UsuarioForm(forms.ModelForm):
 # FORMULARIO DE REGISTRO (CON VALIDACIÓN DE CONTRASEÑA)
 # =====================================================
 class RegistroForm(UserCreationForm):
-    email = forms.EmailField(required=True)  # Nuevo campo adicional
+    email = forms.EmailField(required=True)
     fecha_nacimiento = forms.DateField(
         required=False,
-        widget=forms.DateInput(attrs={'type': 'date'})  # Selector de fecha moderno
+        widget=forms.DateInput(attrs={'type': 'date'})
     )
-    pais = forms.CharField(max_length=50, required=False)  # Campo agregado por el usuario
+    pais = forms.CharField(max_length=50, required=False)
+
+    seguridad = None  # ← Aquí se guarda el resultado
 
     class Meta:
         model = Usuario
         fields = ('username', 'email', 'fecha_nacimiento', 'pais', 'password1', 'password2')
 
-    # 🚀 VALIDACIÓN NUEVA: aplica reglas personalizadas a password1
     def clean_password1(self):
-        password = self.cleaned_data.get("password1")  # Recupera la contraseña ingresada
+        password = self.cleaned_data.get("password1")
         if password:
-            validar_password(password)  # Llama al validador personalizado
-        return password  # Devuelve la contraseña validada
+            validar_password(password)
+            self.seguridad = evaluar_seguridad(password)  # ← Guardamos el nivel
+        return password
+
+    
+def evaluar_seguridad(password):
+    puntaje = 0
+
+    if len(password) >= 8:
+        puntaje += 1
+    if re.search(r"[A-Z]", password):
+        puntaje += 1
+    if re.search(r"[a-z]", password):
+        puntaje += 1
+    if re.search(r"\d", password):
+        puntaje += 1
+
+    if puntaje <= 1:
+        return "muy débil"
+    elif puntaje == 2:
+        return "débil"
+    elif puntaje == 3:
+        return "moderada"
+    else:
+        return "fuerte"
+
 
 
 # -------------------------
@@ -176,7 +201,7 @@ class AgregarCreditoForm(forms.Form):
         cleaned_data = super().clean()
 
         mes = cleaned_data.get("mes_expiracion")
-        anio = cleaned_data.get("anio_expiracion")
+        anio = cleaned_data.get("año_expiracion")
 
         # Obtención de la fecha actual para comparar
         hoy = timezone.now()

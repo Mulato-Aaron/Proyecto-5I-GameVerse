@@ -1,22 +1,114 @@
 {% extends 'App_GameVerse/base.html' %}
 {% block content %}
 
-<!-- 🔹 Contenedor centrado para el formulario de registro -->
 <div class="col-md-5 mx-auto">
-
-    <!-- 🔹 Título del formulario -->
     <h2 class="text-center">Registro de usuario</h2>
 
-    <!-- 🔹 Formulario de registro -->
     <form method="post">
-        {% csrf_token %} <!-- 🔹 Token de seguridad contra CSRF -->
+        {% csrf_token %}
 
-        <!-- 🔹 Renderiza los campos del formulario -->
         {{ form.as_p }}
 
-        <!-- 🔹 Botón de envío -->
+        <!-- El botón real y el indicador se insertan dinámicamente junto a password1 -->
+        <!-- Se deja el botón de envío sin cambios -->
         <button type="submit" class="btn btn-success w-100">Registrarse</button>
     </form>
 </div>
+
+<!-- JS nativo que inserta el botón "Mostrar contraseña" AL LADO de password1
+     y calcula la seguridad en el navegador (misma lógica que tu función Python). -->
+<script>
+(function(){
+    // Esperar que exista el input password1
+    const waitFor = (selector, cb, tries=20) => {
+        const el = document.getElementById(selector);
+        if (el) return cb(el);
+        if (tries <= 0) return;
+        setTimeout(() => waitFor(selector, cb, tries-1), 50);
+    };
+
+    waitFor("id_password1", function(passField) {
+        // Crear botón y contenedor del indicador
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.id = "togglePass";
+        btn.className = "btn btn-secondary btn-sm";
+        btn.style.marginLeft = "8px";
+        btn.textContent = "Mostrar";
+
+        const indicador = document.createElement("span");
+        indicador.id = "seguridadPass";
+        indicador.style.fontWeight = "bold";
+        indicador.style.marginLeft = "10px";
+
+        // Intentar insertar al lado del campo: en el mismo <p> generado por as_p
+        let parentP = passField.closest("p");
+        if (!parentP) {
+            // fallback: insertar después del campo
+            passField.insertAdjacentElement("afterend", btn);
+            passField.insertAdjacentElement("afterend", indicador);
+        } else {
+            // si el <p> ya tiene otros elementos, insertamos al final del <p>
+            parentP.appendChild(btn);
+            parentP.appendChild(indicador);
+        }
+
+        // Toggle mostrar/ocultar
+        btn.addEventListener("click", function(){
+            if (passField.type === "password") {
+                passField.type = "text";
+                btn.textContent = "Ocultar";
+            } else {
+                passField.type = "password";
+                btn.textContent = "Mostrar";
+            }
+        });
+
+        // Función que replica evaluación de seguridad de Python
+        function evaluarSeguridadJS(password) {
+            let puntaje = 0;
+            if (password.length >= 8) puntaje += 1;
+            if (/[A-Z]/.test(password)) puntaje += 1;
+            if (/[a-z]/.test(password)) puntaje += 1;
+            if (/\d/.test(password)) puntaje += 1;
+
+            if (puntaje <= 1) return "muy débil";
+            if (puntaje === 2) return "débil";
+            if (puntaje === 3) return "moderada";
+            return "fuerte";
+        }
+
+        // Actualiza indicador en cada cambio (input)
+        passField.addEventListener("input", function(){
+            const v = passField.value;
+            if (!v) {
+                indicador.textContent = "";
+                indicador.style.color = "";
+                return;
+            }
+
+            const nivel = evaluarSeguridadJS(v);
+            indicador.textContent = " • " + nivel;
+
+            // Colores sencillos para visibilidad (sin tocar css)
+            if (nivel === "muy débil") {
+                indicador.style.color = "red";
+            } else if (nivel === "débil") {
+                indicador.style.color = "orange";
+            } else if (nivel === "moderada") {
+                indicador.style.color = "#c9d100"; // amarillo-verdoso
+            } else {
+                indicador.style.color = "green";
+            }
+        });
+
+        // También disparar evaluación al cargar si ya hay valor (ej. autocompletado)
+        if (passField.value && passField.value.length > 0) {
+            const evt = new Event('input', { bubbles: true });
+            passField.dispatchEvent(evt);
+        }
+    });
+})();
+</script>
 
 {% endblock %}
