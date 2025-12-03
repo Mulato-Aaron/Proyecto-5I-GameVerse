@@ -187,3 +187,27 @@ class AgregarCreditoForm(forms.Form):
                 raise ValidationError("❌ La tarjeta está vencida.")
 
         return cleaned_data
+
+class DevolucionForm(forms.Form):
+    OPCIONES = [
+        ("credito", "Reembolso a crédito"),
+        ("tarjeta", "Reembolso a tarjeta / depósito bancario"),
+    ]
+
+    metodo = forms.ChoiceField(choices=OPCIONES, widget=forms.RadioSelect)
+
+    # Campos solo requeridos si elige tarjeta / depósito
+    titular = forms.CharField(required=False)
+    numero = forms.CharField(required=False)
+    banco = forms.CharField(required=False)
+
+    def clean(self):
+        data = super().clean()
+
+        if data["metodo"] == "tarjeta":
+            if not data["titular"] or not data["numero"] or not data["banco"]:
+                raise forms.ValidationError(
+                    "Debes llenar los datos bancarios para el reembolso por tarjeta/deposito."
+                )
+
+        return data

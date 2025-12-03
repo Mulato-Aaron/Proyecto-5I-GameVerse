@@ -10,7 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm  # Formulario de login 
 from django.contrib import messages  # Mensajes flash para notificaciones al usuario
 from django.utils import timezone  # Manejo de fechas y horas con zona horaria
 
-from .forms import RegistroForm, CuentaForm, ProveedorForm, ProductoForm, UsuarioForm, AgregarCreditoForm
+from .forms import RegistroForm, CuentaForm, ProveedorForm, ProductoForm, UsuarioForm, AgregarCreditoForm, DevolucionForm
 from .models import Producto, Proveedor, Compra, Usuario
 
 from django.contrib.auth.decorators import user_passes_test  # Decorador para permisos de superusuario
@@ -331,13 +331,13 @@ def agregar_al_carrito(request, pk):
 def carrito_view(request):
     """
     Vista del carrito del usuario.
-    Calcula subtotal y total de cada producto.
+    Calcula subtotal, IVA y total.
     """
     usuario = request.user
     carrito = usuario.carrito or []
 
     items = []
-    total = Decimal('0.00')
+    subtotal = Decimal('0.00')
 
     for entry in carrito:
         pid = entry.get('id_producto')
@@ -345,6 +345,8 @@ def carrito_view(request):
             continue
 
         producto = get_object_or_404(Producto, pk=pid)
+
+        # precio en carrito, o precio del producto
         price = Decimal(str(entry.get('precio', producto.precio)))
 
         items.append({
@@ -354,12 +356,21 @@ def carrito_view(request):
             'subtotal': price
         })
 
-        total += price
+        subtotal += price
+
+    # -------------------------
+    #        IVA 16%
+    # -------------------------
+    iva = subtotal * Decimal("0.16")
+    total_con_iva = subtotal + iva
 
     return render(request, 'App_GameVerse/carrito.html', {
         'items': items,
-        'total': total
+        'subtotal': subtotal,
+        'iva': iva,
+        'total': total_con_iva       # importante: tu plantilla usa "total"
     })
+
 
 
 @login_required
@@ -393,7 +404,9 @@ def comprar_carrito(request):
         messages.warning(request, "Tu carrito está vacío.")
         return redirect('App_GameVerse:carrito_view')
 
-    total = sum(Decimal(str(item.get('precio', 0))) for item in carrito)
+    subtotal = sum(Decimal(str(item.get('precio', 0))) for item in carrito)
+    iva = subtotal * Decimal("0.16")
+    total = subtotal + iva
 
     from .forms import MetodoPagoForm
 
@@ -564,20 +577,27 @@ def proveedor_detalle(request, pk):
 @login_required
 def biblioteca_view(request):
     user = request.user
-    biblioteca = user.biblioteca or []
 
+    biblioteca = user.biblioteca or []
     productos = []
+
     for item in biblioteca:
+        id_prod = item.get("id_producto")
+        if not id_prod:
+            continue
+
         try:
-            p = Producto.objects.get(pk=item.get('id_producto'))
+            producto = Producto.objects.get(pk=id_prod)
             productos.append({
-                'producto': p,
-                'fecha_compra': item.get('fecha_compra')
+                "producto": producto,
+                "fecha_compra": item.get("fecha_compra"),
             })
         except Producto.DoesNotExist:
             continue
 
-    return render(request, 'App_GameVerse/biblioteca.html', {'productos': productos})
+    return render(request, "App_GameVerse/biblioteca.html", {
+        "productos": productos
+    })
 
 # Historial de compras del usuario
 @login_required
@@ -643,3 +663,46 @@ def credito(request):
         form = AgregarCreditoForm()
 
     return render(request, "App_GameVerse/credito.html", {"form": form})
+
+@login_required
+def devolver_producto(request, producto_id):
+    user = request.user
+
+    producto = get_object_or_404(Producto, pk=producto_id)
+
+    # Validar que el producto esté en la biblioteca
+    biblioteca = user.biblioteca or []
+    entrada = next((item for item in biblioteca if item["id_producto"] == producto_id), None)
+
+    if not entrada:
+        return render(request, "App_GameVerse/error.html", {
+            "mensaje": "Este producto no está en tu biblioteca."
+        })
+
+    if request.method == "POST":
+        metodo = request.POST.get("metodo")
+
+        # Eliminar de la biblioteca
+        nueva_biblio = [item for item in biblioteca if item["id_producto"] != producto_id]
+        user.biblioteca = nueva_biblio
+
+        # Reembolso como crédito
+        if metodo == "credito":
+            user.credito += producto.precio
+            user.save()
+            return redirect("App_GameVerse:biblioteca")
+
+        # Reembolso a tarjeta
+        elif metodo == "tarjeta":
+            numero = request.POST.get("numero_tarjeta")
+            banco = request.POST.get("banco")
+            titular = request.POST.get("nombre_titular")
+
+            # Aquí NO hacemos transacciones reales.
+            # Solo simularíamos que se enviará un depósito.
+            user.save()
+            return redirect("App_GameVerse:biblioteca")
+
+    return render(request, "App_GameVerse/devolver_producto.html", {
+        "producto": producto
+    })

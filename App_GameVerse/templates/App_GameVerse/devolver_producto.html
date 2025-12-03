@@ -1,0 +1,50 @@
+{% extends 'App_GameVerse/base.html' %}
+
+{% block content %}
+<h2 class="text-center mb-4" style="color:#ff00ff; text-shadow:0 0 10px #ff00ff;">
+    Devolver {{ producto.nombre }}
+</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label><strong>¿Cómo deseas tu reembolso?</strong></label>
+    <select name="metodo" class="form-control" required id="metodo-select">
+        <option value="">Selecciona…</option>
+        <option value="credito">Crédito en cuenta</option>
+        <option value="tarjeta">Reembolso a tarjeta</option>
+    </select>
+
+    <!-- 🔹 Campos de tarjeta (solo visibles si eligen "tarjeta") -->
+    <div id="tarjeta-fields" class="mt-3" 
+         style="display:none; padding:15px; border-radius:10px; 
+         background: rgba(255, 0, 255, 0.05); box-shadow:0 0 10px rgba(255,0,255,0.2);">
+
+        <h4 style="color:#ff00ff; margin-bottom:10px; text-shadow:0 0 8px #ff00ff;">
+            Datos de tarjeta
+        </h4>
+
+        <label>Número de tarjeta</label>
+        <input type="text" name="numero_tarjeta" placeholder="XXXX-XXXX-XXXX-XXXX">
+
+        <label>Banco</label>
+        <input type="text" name="banco" placeholder="Nombre del banco">
+
+        <label>Nombre del titular</label>
+        <input type="text" name="nombre_titular" placeholder="Como aparece en la tarjeta">
+    </div>
+
+    <button class="btn mt-3 w-100">
+        Confirmar devolución
+    </button>
+</form>
+
+<!-- 🔹 Script para mostrar / ocultar campos de tarjeta -->
+<script>
+document.getElementById("metodo-select").addEventListener("change", function() {
+    const tarjeta = document.getElementById("tarjeta-fields");
+    tarjeta.style.display = this.value === "tarjeta" ? "block" : "none";
+});
+</script>
+
+{% endblock %}

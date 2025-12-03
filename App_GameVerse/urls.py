@@ -31,6 +31,7 @@ urlpatterns = [
     path('biblioteca/', views.biblioteca_view, name='biblioteca'),      # Biblioteca del usuario (sus compras)
     path('compras/', views.compras_view, name='compras'),               # Historial de compras del usuario
     path("credito/", views.credito, name="credito"),                    # Página para gestionar o recargar crédito
+    path("biblioteca/devolver/<int:producto_id>/", views.devolver_producto, name="devolver_producto"), # Devolver un producto comprado
     path('cuenta/', views.cuenta, name='cuenta'),                       # Configuración de cuenta del usuario
 
     # ---- CRUD PROVEEDOR ----
