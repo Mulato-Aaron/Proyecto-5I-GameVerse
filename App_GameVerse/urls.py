@@ -33,6 +33,7 @@ urlpatterns = [
     path("credito/", views.credito, name="credito"),                    # Página para gestionar o recargar crédito
     path("biblioteca/devolver/<int:producto_id>/", views.devolver_producto, name="devolver_producto"), # Devolver un producto comprado
     path('cuenta/', views.cuenta, name='cuenta'),                       # Configuración de cuenta del usuario
+    path("cambiar-contrasena/", views.cambiar_contrasena, name="cambiar_contrasena"),
 
     # ---- CRUD PROVEEDOR ----
     path('crud/proveedores/', views.proveedor_list, name='proveedor_list'),              # Lista de proveedores

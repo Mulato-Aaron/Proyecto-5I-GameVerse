@@ -1,0 +1,89 @@
+{% extends 'App_GameVerse/base.html' %}
+
+{% block content %}
+
+<div class="col-md-5 mx-auto">
+    <h2 class="text-center mb-4">Cambiar contraseña</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary w-100">Actualizar contraseña</button>
+    </form>
+
+    <a href="{% url 'App_GameVerse:cuenta' %}" class="btn btn-secondary w-100 mt-3">Volver</a>
+</div>
+
+<script>
+(function() {
+
+    function attachToggleAndMeter(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-secondary btn-sm";
+        btn.style.marginLeft = "8px";
+        btn.textContent = "Mostrar";
+
+        let parentP = field.closest("p");
+        parentP.appendChild(btn);
+
+        btn.addEventListener("click", function() {
+            field.type = (field.type === "password") ? "text" : "password";
+            btn.textContent = (field.type === "password") ? "Mostrar" : "Ocultar";
+        });
+
+        return field;
+    }
+
+    function attachStrengthMeter(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+
+        const indicador = document.createElement("span");
+        indicador.style.fontWeight = "bold";
+        indicador.style.marginLeft = "10px";
+
+        let parentP = field.closest("p");
+        parentP.appendChild(indicador);
+
+        function evaluarSeguridadJS(password) {
+            let puntaje = 0;
+            if (password.length >= 8) puntaje += 1;
+            if (/[A-Z]/.test(password)) puntaje += 1;
+            if (/[a-z]/.test(password)) puntaje += 1;
+            if (/\d/.test(password)) puntaje += 1;
+
+            if (puntaje <= 1) return ["muy débil", "red"];
+            if (puntaje === 2) return ["débil", "orange"];
+            if (puntaje === 3) return ["moderada", "#c9d100"];
+            return ["fuerte", "green"];
+        }
+
+        field.addEventListener("input", function() {
+            const v = field.value;
+            if (!v) {
+                indicador.textContent = "";
+                return;
+            }
+            const [nivel, color] = evaluarSeguridadJS(v);
+            indicador.textContent = " • " + nivel;
+            indicador.style.color = color;
+        });
+    }
+
+    // ✔ Mantener toggle + medidor SOLO en la primera contraseña
+    attachToggleAndMeter("id_new_password1");
+    attachStrengthMeter("id_new_password1");
+
+    // ❌ Quitar botón de mostrar/ocultar en new_password2
+    // (No llamamos a attachToggleAndMeter para este campo)
+    // attachToggleAndMeter("id_new_password2");
+
+})();
+</script>
+
+{% endblock %}

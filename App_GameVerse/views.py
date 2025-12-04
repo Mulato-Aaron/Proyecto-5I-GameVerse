@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required  # Decorador para prot
 from django.contrib.auth.forms import AuthenticationForm  # Formulario de login por defecto de Django
 from django.contrib import messages  # Mensajes flash para notificaciones al usuario
 from django.utils import timezone  # Manejo de fechas y horas con zona horaria
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 from .forms import RegistroForm, CuentaForm, ProveedorForm, ProductoForm, UsuarioForm, AgregarCreditoForm, DevolucionForm
 from .models import Producto, Proveedor, Compra, Usuario
@@ -706,3 +708,18 @@ def devolver_producto(request, producto_id):
     return render(request, "App_GameVerse/devolver_producto.html", {
         "producto": producto
     })
+
+
+@login_required
+def cambiar_contrasena(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Mantener sesión después de cambiar contraseña
+            messages.success(request, "Tu contraseña se ha actualizado correctamente.")
+            return redirect("App_GameVerse:cuenta")
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, "App_GameVerse/cambiar_contrasena.html", {"form": form})

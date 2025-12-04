@@ -21,6 +21,10 @@
         <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
         <!-- 🔹 Botón azul que ocupa todo el ancho -->
     </form>
+    <!-- Botón para cambiar contraseña -->
+    <a href="{% url 'App_GameVerse:cambiar_contrasena' %}" class="btn btn-warning w-100 mb-4">
+        Cambiar contraseña
+    </a>
 
     <!-- 🔹 Formulario para eliminar la cuenta -->
     <form method="post" onsubmit="return confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
