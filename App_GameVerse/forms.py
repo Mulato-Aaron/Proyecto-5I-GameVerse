@@ -11,15 +11,12 @@ import re
 # =====================================================
 
 def validar_password(value):
-    # Verifica que la contraseña solo contenga letras y números.
     if not re.match(r'^[A-Za-z0-9]+$', value):
         raise ValidationError("La contraseña solo puede contener letras y números (sin caracteres especiales).")
 
-    # Verifica la longitud mínima requerida (8 caracteres).
     if len(value) < 8:
         raise ValidationError("La contraseña debe tener al menos 8 caracteres.")
 
-    # Verifica que tenga al menos una letra y un número para mayor seguridad.
     if not re.search(r'[A-Za-z]', value) or not re.search(r'\d', value):
         raise ValidationError("La contraseña debe contener al menos una letra y un número.")
 
@@ -44,6 +41,9 @@ class ProductoForm(forms.ModelForm):
             'fecha_lanzamiento', 'proveedor', 'calificacion_promedio',
             'disponible', 'imagen'
         ]
+        widgets = {
+            'fecha_lanzamiento': forms.DateInput(attrs={'type': 'date'})
+        }
 
 
 # -------------------------
@@ -59,7 +59,7 @@ class UsuarioForm(forms.ModelForm):
 
 
 # =====================================================
-# FORMULARIO DE REGISTRO (CON VALIDACIÓN DE CONTRASEÑA)
+# FORMULARIO DE REGISTRO
 # =====================================================
 class RegistroForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -69,7 +69,7 @@ class RegistroForm(UserCreationForm):
     )
     pais = forms.CharField(max_length=50, required=False)
 
-    seguridad = None  # ← Aquí se guarda el resultado
+    seguridad = None
 
     class Meta:
         model = Usuario
@@ -79,10 +79,10 @@ class RegistroForm(UserCreationForm):
         password = self.cleaned_data.get("password1")
         if password:
             validar_password(password)
-            self.seguridad = evaluar_seguridad(password)  # ← Guardamos el nivel
+            self.seguridad = evaluar_seguridad(password)
         return password
 
-    
+
 def evaluar_seguridad(password):
     puntaje = 0
 
@@ -105,7 +105,6 @@ def evaluar_seguridad(password):
         return "fuerte"
 
 
-
 # -------------------------
 # FORMULARIO DE LOGIN
 # -------------------------
@@ -121,11 +120,23 @@ class CuentaForm(forms.ModelForm):
         model = Usuario
         fields = ['username', 'email', 'pais', 'fecha_nacimiento']
         widgets = {
-            'fecha_nacimiento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'fecha_nacimiento': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'},
+                format='%Y-%m-%d'  # ← FORMATO CORRECTO PARA HTML5
+            ),
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'pais': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Hace que Django precargue la fecha con el formato correcto
+        if self.instance and self.instance.fecha_nacimiento:
+            self.fields['fecha_nacimiento'].initial = (
+                self.instance.fecha_nacimiento.strftime('%Y-%m-%d')
+            )
+
 
 
 # =====================================================
@@ -134,13 +145,12 @@ class CuentaForm(forms.ModelForm):
 class MetodoPagoForm(forms.Form):
     METODOS = [
         ('Tarjeta', 'Tarjeta'),
-        ('Efectivo', 'Efectivo'),
-        ('Credito', 'Crédito de la cuenta'),  # ← Método agregado por ti
+        ('Credito', 'Crédito de la cuenta'),
     ]
 
     metodo_pago = forms.ChoiceField(
-        choices=METODOS,  # Lista de métodos disponibles
-        widget=forms.RadioSelect,  # Campos tipo "radio button"
+        choices=METODOS,
+        widget=forms.Select(attrs={'class': 'form-select'}),
         label="Selecciona tu método de pago"
     )
 
@@ -148,15 +158,23 @@ class MetodoPagoForm(forms.Form):
         max_length=15,
         label="Teléfono",
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Ingresa tu teléfono'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ingresa tu teléfono'
+        })
     )
 
     direccion = forms.CharField(
         max_length=200,
         label="Dirección",
         required=True,
-        widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Ingresa tu dirección'})
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 2,
+            'placeholder': 'Ingresa tu dirección'
+        })
     )
+
 
 
 # =====================================================
@@ -170,19 +188,14 @@ class PagoTarjetaForm(forms.Form):
     cvv = forms.CharField(max_length=4, min_length=3, label="CVV")
 
     def clean(self):
-        cleaned_data = super().clean()  # Recupera todos los campos ya validados
-
+        cleaned_data = super().clean()
         mes = cleaned_data.get("mes_expiracion")
         anio = cleaned_data.get("anio_expiracion")
-
-        # Se obtiene la fecha actual para comparar
         hoy = timezone.now()
 
-        # Validación nueva: la tarjeta es válida si expira este mes o después
         if mes and anio:
             if anio < hoy.year or (anio == hoy.year and mes < hoy.month):
                 raise ValidationError("❌ La tarjeta está vencida.")
-
         return cleaned_data
 
 
@@ -199,20 +212,20 @@ class AgregarCreditoForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-
         mes = cleaned_data.get("mes_expiracion")
-        anio = cleaned_data.get("año_expiracion")
-
-        # Obtención de la fecha actual para comparar
+        anio = cleaned_data.get("anio_expiracion")
         hoy = timezone.now()
 
-        # Validación nueva igual que en PagoTarjetaForm
         if mes and anio:
             if anio < hoy.year or (anio == hoy.year and mes < hoy.month):
                 raise ValidationError("❌ La tarjeta está vencida.")
 
         return cleaned_data
 
+
+# =====================================================
+# FORMULARIO DE DEVOLUCIÓN
+# =====================================================
 class DevolucionForm(forms.Form):
     OPCIONES = [
         ("credito", "Reembolso a crédito"),
@@ -220,8 +233,6 @@ class DevolucionForm(forms.Form):
     ]
 
     metodo = forms.ChoiceField(choices=OPCIONES, widget=forms.RadioSelect)
-
-    # Campos solo requeridos si elige tarjeta / depósito
     titular = forms.CharField(required=False)
     numero = forms.CharField(required=False)
     banco = forms.CharField(required=False)
