@@ -206,8 +206,8 @@ class AgregarCreditoForm(forms.Form):
     credito = forms.DecimalField(max_digits=10, decimal_places=2, label="Monto a agregar")
     nombre_tarjeta = forms.CharField(max_length=100)
     numero_tarjeta = forms.CharField(max_length=20)
-    mes_expiracion = forms.IntegerField(min_value=1, max_value=12)
-    anio_expiracion = forms.IntegerField(min_value=2024, max_value=2100)
+    mes_expiracion = forms.IntegerField(min_value=1, max_value=12, label="Mes de expiración")
+    anio_expiracion = forms.IntegerField(min_value=2024, max_value=2100, label="Año de expiración")
     cvv = forms.CharField(max_length=4)
 
     def clean(self):
