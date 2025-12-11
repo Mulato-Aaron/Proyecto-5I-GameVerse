@@ -25,9 +25,13 @@
         <!-- 🔹 Bloque principal donde cada página hija insertará su contenido -->
     </main>    
 
-    <footer class="text-center bg-dark text-white py-3 mt-5">
+    <footer class="text-center bg-dark text-white py-3 mt-5" style="display: flex; justify-content: space-between;">
         <!-- 🔹 Footer común con fondo oscuro, texto blanco, padding y margen superior -->
-        <p>© 2025 GameVerse - Todos los derechos reservados 🎮</p>
+        <p>© 2025 Aaron Mulato/GameVerse - Todos los derechos reservados 🎮</p>
+        <a href="{% url 'App_GameVerse:home' %}" class="logo">
+            <!-- 🔹 Logo que enlaza a la página de inicio -->
+            <img src="{% static 'App_GameVerse/imagenes/logotipo.png' %}" alt="GameVerse Logo">
+        </a>
     </footer>
 </body>
 </html>
